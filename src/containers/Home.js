@@ -4,14 +4,14 @@ import {
   ScrollView,
   Image,
   View,
-  RefreshControl ,
+  ListView ,
   Text,
   StyleSheet,
-  Button
+  Button,
+  TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { fetchFeeds } from '../actions/feeds';
 import DataList from '../components/DataList';
 
 class Home extends Component {
@@ -25,6 +25,7 @@ class Home extends Component {
   }
 
   renderRow(item) {
+    console.log(item)
     return (
       <TouchableHighlight
         underlayColor="rgba(0,0,0,.1)"
@@ -32,11 +33,11 @@ class Home extends Component {
         key={item.length}>
         <View style={styles.wrapper}>
           <View style={styles.header}>
-            <Text style={styles.title}>{feed.title}</Text>
+            <Text style={styles.title}>{item.title}</Text>
           </View>
           <View style={styles.footer}>
-            <Text style={styles.description}>{feed.description}</Text>
-            <Text style={styles.smallText}>{feed.feedUrl}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.smallText}>{item.url}</Text>
           </View>
         </View>
       </TouchableHighlight>
@@ -44,14 +45,17 @@ class Home extends Component {
   }
 
   render() {
-    const { feeds } = this.props;
+    const { feedList } = this.props;
+    console.log(feedList);
+    let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 != r2})
+    let dataSource = feedList ? ds.cloneWithRows(feedList) : ds.cloneWithRows([]);
     return (
       <ScrollView style={{ flex:1,backgroundColor:'white' }} contentContainerStyle={{paddingTop: 64}} contentInset={{ bottom:50 }} >
         <View>
-          <Text>Home</Text>
-          <DataList
-            listdata={feeds}
-            renderRow={this.renderRow}
+          <ListView
+            dataSource={dataSource}
+            renderRow={this.renderRow.bind(this)}
+            enableEmptySections={true}
           />
         </View>
       </ScrollView>
@@ -60,9 +64,10 @@ class Home extends Component {
 }
 
 function mapStateToProps(state) {
-  const { entities } = state;
+  const { feeds } = state;
+  console.log(feeds)
   return {
-    feeds : entities.feeds
+    feedList:feeds.feedList
   }
 }
 

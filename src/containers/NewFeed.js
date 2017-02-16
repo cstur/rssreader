@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { TouchableHighlight, Image, View,TextInput ,Text,StyleSheet} from 'react-native';
 import { connect } from 'react-redux';
-import { fetchFeeds } from '../actions/feeds';
+import { fetchFeeds, addFeed } from '../actions/feeds';
 
 class NewFeed extends Component {
 
@@ -15,7 +15,25 @@ class NewFeed extends Component {
   }
 
   addFeed(url) {
+/*
+    Api.fetchRss(this.state.input).then((res) => {
+      if (res.responseStatus == 200) {
+        var feeds = FeedStore.getState();
+        var resFeed = res.responseData.feed;
+        if(_.find(feeds, _.matchesProperty('feedUrl', resFeed.feedUrl))){
+          this.props.navigator.pop();
+          AlertIOS.alert('Feeds already in list');
+        } else {
+          this.props.navigator.pop();
+          AppActions.addFeed(res.responseData.feed);
+        }
+      } else {
+        AlertIOS.alert(res.responseDetails);
+      }
+    });
+*/
     this.props.dispatch(fetchFeeds(url));
+
   }
 
   render() {
@@ -26,7 +44,7 @@ class NewFeed extends Component {
         onChangeText={(text) => this.setState({input: text})}/>
         <TouchableHighlight
           style={styles.button}
-          onPress={this.addFeed(this.state.input)}>
+          onPress={()=>{this.addFeed(this.state.input)}}>
             <Text style={styles.buttonText}>Add</Text>
         </TouchableHighlight>
       </View>

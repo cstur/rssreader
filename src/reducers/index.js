@@ -1,9 +1,9 @@
 import {combineReducers} from 'redux';
-import entities from './entities';
+import feeds from './feeds';
 
 
 const rootReducer = combineReducers({
-  entities
+  feeds
 });
 
 export default rootReducer;

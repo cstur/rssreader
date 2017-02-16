@@ -1,6 +1,9 @@
-const FEEDS_REQUEST = 'FEEDS_REQUEST';
-const FEEDS_SUCCESS = 'FEEDS_SUCCESS';
-const FEEDS_FAILURE = 'FEEDS_FAILURE';
+import {
+  FEEDS_REQUEST,
+  FEEDS_SUCCESS,
+  FEEDS_FAILURE,
+  ADD_FEED
+} from '../constants/ActionTypes'
 
 function feedsRequest() {
   return {
@@ -22,13 +25,20 @@ function feedsFailure(error) {
   }
 }
 
+export function addFeed(feed){
+  return {
+    type: ADD_FEED,
+    newFeed: feed
+  }
+}
+
 export function fetchFeeds(feedurl) {
   if (!(/^http:\/\//.test(feedurl))) {
     feedurl = "http://" + feedurl;
   }
 
-  var GOOGLE_FEED_API_URL = 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=-1&q=';
-  var url = GOOGLE_FEED_API_URL + encodeURIComponent(feedurl);
+  var FEED_API_URL = 'https://api.rss2json.com/v1/api.json?rss_url=';
+  var url = FEED_API_URL + feedurl;
 
   return (dispatch,getState) => {
     dispatch(feedsRequest());
@@ -36,6 +46,7 @@ export function fetchFeeds(feedurl) {
       .then(response => response.json())
       .then(json => {
         dispatch(feedsSuccess(json))
+        dispatch(addFeed(json.feed))
       })
       .catch((err)=> {
         dispatch(feedsFailure(err));
